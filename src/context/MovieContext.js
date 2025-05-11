@@ -1,4 +1,3 @@
-// src/context/MovieContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export const MovieContext = createContext();
@@ -8,10 +7,21 @@ export const MovieProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState(localStorage.getItem('lastSearch') || '');
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('user') ? true : false);
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+    };
+
 
   useEffect(() => {
     localStorage.setItem('lastSearch', searchTerm);
   }, [searchTerm]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('favorites');
+    if (saved) setFavorites(JSON.parse(saved));
+  }, []);
 
   const addFavorite = (movie) => {
     setFavorites((prev) => {
@@ -29,10 +39,15 @@ export const MovieProvider = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    const saved = localStorage.getItem('favorites');
-    if (saved) setFavorites(JSON.parse(saved));
-  }, []);
+  const login = (user) => {
+    setIsAuthenticated(true);
+    localStorage.setItem('user', JSON.stringify(user)); // Store user data
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('user'); // Remove user data
+  };
 
   return (
     <MovieContext.Provider
@@ -43,9 +58,13 @@ export const MovieProvider = ({ children }) => {
         addFavorite,
         removeFavorite,
         darkMode,
+        toggleDarkMode,
         setDarkMode,
         searchTerm,
-        setSearchTerm
+        setSearchTerm,
+        isAuthenticated,
+        login,
+        logout
       }}
     >
       {children}
@@ -53,5 +72,4 @@ export const MovieProvider = ({ children }) => {
   );
 };
 
-// ✅ ADD THIS:
 export const useMovieContext = () => useContext(MovieContext);
