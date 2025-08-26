@@ -57,7 +57,7 @@ const LoginPage = () => {
         >
           <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#2575fc' }}>
-              Welcome Back
+             Your Movie Adventure Awaits
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Please login to continue
